@@ -15,6 +15,6 @@ whitenoise==4.1.2
 gunicorn==19.9.0
 django-heroku==0.3.1
 
--e git://github.com/hbuyse/dj-newsletter.git@94fa873ce2d54496e1af41bb182da21c5a00c586#egg=dj_newsletter
--e git://github.com/hbuyse/dj-sponsoring.git@dc1652ab7dbaa25199505dd680e28289a86c7d77#egg=dj_sponsoring
--e git://github.com/hbuyse/dj-sports-manager.git@7e32cc41347b968b4ede9ea6846de14d9504c3f9#egg=dj_sports_manager
+-e git+https://github.com/hbuyse/dj-newsletter.git@94fa873ce2d54496e1af41bb182da21c5a00c586#egg=dj_newsletter
+-e git+https://github.com/hbuyse/dj-sponsoring.git@dc1652ab7dbaa25199505dd680e28289a86c7d77#egg=dj_sponsoring
+-e git+https://github.com/hbuyse/dj-sports-manager.git@7e32cc41347b968b4ede9ea6846de14d9504c3f9#egg=dj_sports_manager
