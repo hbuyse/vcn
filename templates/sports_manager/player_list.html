@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% load bootstrap4 %}
+{% load i18n %}
+{% load l10n %}
+{% load staticfiles %}
+
+{% block path %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{% trans "My players" %}</li>
+    </ol>
+  </nav>
+{% endblock %}
+
+{% block page_title %}
+  {% trans "My players" %}
+{% endblock %}
+
+{% block page_title_buttons %}
+  {% if user.is_authenticated %}
+    <div class="btn-group float-right" role="group">
+      <a class="btn btn-primary" href="{% url 'sports-manager:player-create' user.get_username %}">{% trans "New player" %}</a>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="list-group">
+  {% for player in player_list %}
+    {% if forloop.first %}
+      <table class="table table-hover" id="myPlayerTable">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">{% trans "First name" %}</th>
+            <th scope="col">{% trans "Last name" %}</th>
+            <th scope="col">{% trans "Birthday" %}</th>
+            <th scope="col">{% trans "Medical certificate validation" %}</th>
+            {% if user.is_authenticated and user == player.owner %}
+              <th scope="col">{% trans "Links" %}</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+    {% endif %}
+
+          <tr>
+            <td>{{ player.first_name }}</td>
+            <td>{{ player.last_name }}</td>
+            <td>{{ player.birthday|localize }}</td>
+            <td>{{ player.get_last_medical_certificate.get_validation_display }}</td>
+            {% if user.is_authenticated and user == player.owner %}
+              <td>
+                <div class="btn-group btn-group-sm float-right" role="group">
+                  <a class="btn btn-primary" href="{% url 'sports-manager:player-update' player.owner.get_username player.id %}">{% trans "Update" %}</a>
+                  <a class="btn btn-danger" href="{% url 'sports-manager:player-delete' player.owner.get_username player.id %}">{% trans "Delete" %}</a>
+                </div>
+              </td>
+            {% endif %}
+          </tr>
+
+    {% if forloop.last %}
+        </tbody>
+      </table>
+    {% endif %}
+  {% empty %}
+    <p>No player listed yet...</p>
+  {% endfor %}
+  </div>
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block path %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'sports-manager:team-list' %}">{% trans "Teams" %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ team }}</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block page_title %}
+  {{ team }}
+{% endblock %}
+
+{% block page_title_buttons %}
+  {% if user.is_staff or user.is_superuser %}
+  <div class="btn-group float-right" role="group">
+    <a href="{% url 'sports-manager:team-update' team.slug %}" class="btn btn-primary btn-sm">{% trans "Update" %}</a>
+    <a href="{% url 'sports-manager:team-delete' team.slug %}" class="btn btn-danger btn-sm">{% trans "Delete" %}</a>
+  </div>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="alert {% if team.recruitment %}alert-success{% else %}alert-warning{% endif %}" role="alert">
+      {% blocktrans with recruitment=team.recruitment|yesno:_("is recruiting,is not recruiting") %}
+        This team {{ recruitment }} players.
+      {% endblocktrans %}
+    </div>
+  {% if team.img %}
+    <img src="{{ team.img.url }}" alt="{{ team.name }} image" />
+  {% endif %}
+
+  <h2 class="mt-4">{% trans "Informations" %}</h2>
+  <div class="row">
+    <div class="col-1">{% trans "Category:" %}</div>
+    <div class="col-5">{{ team.category }}</div>
+    <div class="col-1">{% trans "Level:" %}</div>
+    <div class="col-5">{{ team.get_level_display|title }}</div>
+  </div>
+  <div class="row">
+    <div class="col-1">{% trans "Sex:" %}</div>
+    <div class="col-5">{{ team.get_sex_display|title }}</div>
+    <div class="col-1">{% trans "Url:" %}</div>
+    <div class="col-5"><a href="{{ team.url }}" target="_blank">{{ team.url }}</a></div>
+  </div>
+  {% if team.trainer %}
+    <div class="row">
+      <div class="col-1">{% trans "Trainer:" %}</div>
+      <div class="col-5">{{ team.trainer.get_full_name }}</div>
+    </div>
+  {% endif %}
+
+  {% if team.timeslot_set.all %}
+    <h2 class="mt-4">{% trans "Time slots" %}</h2>
+    {% for ts in team.timeslot_set.all %}
+
+      {% if forloop.first %}
+        <table class="table table-sm table-hover" id="timeslotTable">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">{% trans "Type of time slot" %}</th>
+              <th scope="col">{% trans "Day" %}</th>
+              <th scope="col">{% trans "Starting time" %}</th>
+              <th scope="col">{% trans "Ending time" %}</th>
+              {% if user.is_staff %}
+                <th scope="col">{% trans "Links" %}</th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+      {% endif %}
+
+          <tr>
+            <td>{{ ts.get_type_display|title }}</td>
+            <td>{{ ts.get_day_display|title }}</td>
+            <td>{{ ts.start }}</td>
+            <td>{{ ts.end }}</td>
+            {% if user.is_staff %}
+              <td>
+                <div class="btn-group btn-group-sm float-right" role="group">
+                  <a class="btn btn-primary" href="{% url 'sports-manager:team-time-slot-update' team.slug ts.pk %}">{% trans "Update" %}</a>
+                  <a class="btn btn-danger" href="{% url 'sports-manager:team-time-slot-delete' team.slug ts.pk %}">{% trans "Delete" %}</a>
+                </div>
+              </td>
+            {% endif %}
+          </tr>
+
+    {% if forloop.last %}
+        </tbody>
+      </table>
+    {% endif %}
+    {% endfor %}
+  {% endif %}
+
+  {% if team.description %}
+    <h2 class="mt-4">{% trans "Description" %}</h2>
+    {{ team.description_md|safe }}
+  {% endif %}
+
+  <h2 class="mt-4">{% trans "Teammates" %}</h2>
+  {% for license in team.license_set.all %}
+    {% if forloop.first %}
+      <div class="card-deck">
+    {% endif %}
+
+    <div class="card mb-4">
+      <div class="card-body">
+          {{ license.player.first_name }} {{ license.player.last_name }}
+          {% if license.is_captain %}
+            {% trans "(captain)" %}
+          {% endif %}
+      </div>
+    </div>
+  
+    {% if forloop.counter|divisibleby:2 %}<div class="w-100 d-none d-sm-block d-md-none"><!-- wrap every 2 on sm--></div>{% endif %}
+    {% if forloop.counter|divisibleby:3 %}<div class="w-100 d-none d-md-block d-lg-none"><!-- wrap every 3 on md--></div>{% endif %}
+    {% if forloop.counter|divisibleby:4 %}<div class="w-100 d-none d-lg-block d-xl-none"><!-- wrap every 4 on lg--></div>{% endif %}
+    {% if forloop.counter|divisibleby:5 %}<div class="w-100 d-none d-xl-block"><!-- wrap every 5 on xl--></div>{% endif %}
+
+    {% if forloop.last %}
+      </div>
+    {% endif %}
+  {% empty %}
+    <p>
+      {% blocktrans %}No known teammate related to this team{% endblocktrans %}
+    </p>
+  {% endfor %}
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block path %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{% trans "Gymnasiums" %}</a></li>
+    </ol>
+  </nav>
+{% endblock %}
+
+
+{% block page_title %}
+  {% trans "Gymnasiums" %}
+{% endblock %}
+
+{% block page_title_buttons %}
+  {% if user.is_staff %}
+    <div class="btn-group float-right" role="group">
+      <a class="btn btn-primary" href="{% url 'sports-manager:gymnasium-create' %}">{% trans "New gymnasium" %}</a>
+    </div>
+  {% endif %}
+{% endblock %}
+
+
+{% block content %}
+  <div class="card-columns">
+  {% for gymnasium in gymnasium_list %}
+    <div class="card">
+      <h5 class="card-header">
+        {{ gymnasium }}
+      </h5>
+      <div class="card-body">
+        <p class="card-text">{{ gymnasium.address }}<br/>{{ gymnasium.zip_code }} {{ gymnasium.city }}</p>
+        {% if gymnasium.phone %}
+          <p class="card-text">{% trans "Phone: " %}{{ gymnasium.phone }}</p>
+        {% endif %}
+        <a href="{{ gymnasium.get_absolute_url }}" class="card-link">{% trans "Details" %}</a>
+      </div>
+    </div>
+  {% empty %}
+    <p>No gymnasium...</p>
+  {% endfor %}
+  </div>
+{% endblock %}

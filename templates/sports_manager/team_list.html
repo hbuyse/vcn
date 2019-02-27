@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block path %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{% trans "Teams" %}</li>
+    </ol>
+  </nav>
+{% endblock %}
+
+{% block page_title %}
+  {% trans "Teams" %}
+{% endblock %}
+
+{% block page_title_buttons %}
+  {% if user.is_staff %}
+    <div class="btn-group float-right" role="group">
+      <a class="btn btn-primary" href="{% url 'sports-manager:team-create' %}">{% trans "New team" %}</a>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="list-group">
+  {% for team in team_list %}
+    {% if forloop.first %}
+      <div class="card-columns">
+    {% endif %}
+      <div class="card">
+        {% if team.img %}
+          <img class="card-img-top" src="{{ team.img.url }}" alt="{{ team.name }}'s logo">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ team }}</h5>
+          <p class="card-text">{{ team.category }}</p>
+          <a href="{{ team.get_absolute_url }}" class="card-link">{% trans "Details" %}</a>
+        </div>
+      </div>
+    {% if forloop.last %}
+      </div>
+    {% endif %}
+  {% empty %}
+    <p>{% trans "No team listed yet" %}...</p>
+  {% endfor %}
+  </div>
+{% endblock %}

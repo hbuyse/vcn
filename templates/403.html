@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block path %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans "Permission denied" %}</li>
+  </ol>
+</nav>
+{% endblock %}
+
+
+{% block page_title %}
+  {% trans "Permission denied" %}
+{% endblock %}
+
+
+{% block content %}
+  <p>{% blocktrans %}Error: {{ exception }}{% endblocktrans %}</p>
+  <span>{% blocktrans %}We're sorry, but you are not authorized to view this page (Error: 403){% endblocktrans %}</span>
+
+  <form>
+    <button type="button" class="btn btn-primary" onclick="history.back()">{% trans "Go back" %}</button>
+    <a href="{% url 'home' %}" class="btn btn-primary" role="button">{% trans "Go to homepage" %}</a>
+  </form>
+{% endblock %}
