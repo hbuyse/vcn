@@ -2,9 +2,9 @@ import dj_database_url
 import django_heroku
 import os
 
-from vcn.settings.dev import *
+from config.settings.dev import *
 
-# Get debug variable 
+# Get debug variable
 DEBUG = os.getenv('DEBUG', 'FALSE') == 'TRUE'
 
 ALLOWED_HOSTS = ['*']

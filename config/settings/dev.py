@@ -89,7 +89,7 @@ MIDDLEWARE = [
     'account.middleware.TimezoneMiddleware',
 ]
 
-ROOT_URLCONF = 'vcn.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -111,7 +111,7 @@ TEMPLATES = [
 
 FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
-WSGI_APPLICATION = 'vcn.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
@@ -230,7 +230,7 @@ BOOTSTRAP4 = {
     },
 }
 
-LOGIN_URL = "/account/login"
+LOGIN_URL = "/account/login/"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
